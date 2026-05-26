@@ -109,6 +109,13 @@ st.markdown("""
             font-weight: 700 !important;
         }
         
+        /* Tooltip Info Icon */
+        [data-testid="stTooltipIcon"],
+        [data-testid="stTooltipIcon"] * {
+            color: #000 !important;
+            fill: #000 !important;
+        }
+        
         /* Neobrutalism Header */
         .neo-hero {
             background: #FFE500;
@@ -289,16 +296,18 @@ st.markdown("""
         }
         
         /* Input Styles */
-        .stTextArea textarea {
+        .stTextArea textarea, .stTextInput input {
             border: 4px solid #000 !important;
             padding: 1rem;
             font-size: 1rem;
             background: #FFF;
+            color: #000 !important;
+            caret-color: #000 !important;
             font-family: 'Space Mono', monospace;
             box-shadow: 4px 4px 0px #000;
         }
         
-        .stTextArea textarea:focus {
+        .stTextArea textarea:focus, .stTextInput input:focus {
             border: 4px solid #000 !important;
             box-shadow: 6px 6px 0px #000;
         }

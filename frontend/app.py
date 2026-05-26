@@ -409,6 +409,31 @@ st.markdown("""
             color: #000 !important;
         }
         
+        /* Critical Disclaimer Banner */
+        .disclaimer-critical {
+            background: #FFF5F5;
+            color: #000 !important;
+            padding: 2rem;
+            border: 4px solid #FF4444;
+            margin: 2rem 0;
+            font-weight: 600;
+            box-shadow: 8px 8px 0px #FF4444;
+            line-height: 1.8;
+        }
+        
+        .disclaimer-critical b {
+            color: #CC0000 !important;
+        }
+        
+        .disclaimer-critical ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .disclaimer-critical li {
+            margin: 0.5rem 0;
+        }
+        
         /* List Styles */
         ul, ol {
             font-weight: 600;
@@ -518,7 +543,7 @@ with st.sidebar:
     st.markdown("""
         <div class='disclaimer-badge'>
             <b>⚠️ MEDICAL DISCLAIMER</b><br><br>
-            This tool provides AI-powered suggestions only. Always consult healthcare professionals for medical advice, diagnosis, or treatment.
+            This is a <b>student learning project</b> — NOT a medical tool. Predictions are NOT clinically validated. Do NOT self-medicate. Always consult a qualified doctor.
         </div>
     """, unsafe_allow_html=True)
 
@@ -627,6 +652,21 @@ if st.session_state.page == "HOME":
                     </div>
                 """, unsafe_allow_html=True)
 
+                # Medical Disclaimer Banner
+                st.markdown("""
+                    <div class='disclaimer-critical'>
+                        <b>⚠️ IMPORTANT MEDICAL DISCLAIMER</b><br><br>
+                        CoughGPT is a <b>student/learning project</b> built purely for <b>educational and demonstration purposes</b>.
+                        <ul>
+                            <li>The disease predictions and drug recommendations are <b>NOT medically verified</b> and <b>NOT clinically validated</b>.</li>
+                            <li><b>Do NOT take any medication</b> based on what this app suggests.</li>
+                            <li><b>Always consult a qualified medical professional</b> for health concerns, diagnosis, and treatment.</li>
+                            <li>If you are experiencing a medical emergency, <b>call your local emergency services immediately</b>.</li>
+                        </ul>
+                        <b>Use this project only to explore how ML pipelines and LLM integrations work — not as a health tool.</b>
+                    </div>
+                """, unsafe_allow_html=True)
+
     elif analyze_button:
         st.markdown("""
             <div class='warning-neo'>
@@ -683,10 +723,17 @@ elif st.session_state.page == "ABOUT":
             </ul>
         </div>
         
-        <div class='neo-card'>
-            <h3>⚠️ MEDICAL DISCLAIMER</h3>
-            <p><b>THIS TOOL IS FOR INFORMATIONAL PURPOSES ONLY.</b></p>
-            <p>Always consult qualified healthcare providers for diagnosis and treatment. CoughGPT predictions are ML-based and may not be 100% accurate.</p>
+        <div class='disclaimer-critical'>
+            <b>⚠️ IMPORTANT MEDICAL DISCLAIMER</b><br><br>
+            CoughGPT is a <b>student/learning project</b> built purely for <b>educational and demonstration purposes</b>.
+            <ul>
+                <li>The disease predictions and drug recommendations are <b>NOT medically verified</b> and <b>NOT clinically validated</b>.</li>
+                <li><b>Do NOT take any medication</b> based on what this app suggests.</li>
+                <li><b>Always consult a qualified medical professional</b> for health concerns, diagnosis, and treatment.</li>
+                <li>The creators are <b>not medical professionals</b> and accept <b>no responsibility or liability</b> for any actions taken based on app outputs.</li>
+                <li>If you are experiencing a medical emergency, <b>call your local emergency services immediately</b>.</li>
+            </ul>
+            <b>Use this project only to explore how ML pipelines and LLM integrations work — not as a health tool.</b>
         </div>
     """, unsafe_allow_html=True)
 

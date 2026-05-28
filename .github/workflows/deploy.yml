@@ -1,0 +1,34 @@
+name: Sync to Hugging Face Space
+on:
+  push:
+    branches: [hf-deployment] 
+  workflow_dispatch:
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # 1. Grab only the absolute latest version, ignore all past history
+          fetch-depth: 1 
+          # 2. Turn off LFS (Large File Storage) because we don't want heavy files here anyway
+          lfs: false     
+          
+      - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # 3. Completely delete the GitHub history from this temporary runner
+          rm -rf .git
+          
+          # 4. Initialize a brand new, empty Git repository 
+          git init
+          git branch -M main
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions Deployer"
+          
+          git add .
+          git commit -m "Deploying coughgpt app to Hugging Face"
+          
+          git push --force https://parvv-24:$HF_TOKEN@huggingface.co/spaces/parvv-24/CoughGPT main

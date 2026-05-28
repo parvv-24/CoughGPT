@@ -12,12 +12,9 @@ import numpy as np
 import pandas as pd
 import joblib
 from gensim.models.fasttext import FastText
+from huggingface_hub import snapshot_download 
 
 logger = logging.getLogger(__name__)
-
-# Path to models directory (relative to backend/)
-MODELS_DIR = os.path.join(os.path.dirname(__file__), "models")
-
 
 @dataclass
 class MLModels:
@@ -30,13 +27,18 @@ class MLModels:
     drug_ft: object
     train_df: pd.DataFrame
 
-
 _models: Optional[MLModels] = None
-
 
 def load_models() -> MLModels:
     """Load all ML models from disk. Call once at startup."""
     global _models
+
+    logger.info("Downloading ML models from Hugging Face...")
+    
+    MODELS_DIR = snapshot_download(
+        repo_id="parvv-24/CoughGPT-Models", 
+        token=os.getenv("HF_TOKEN")         
+    )
 
     logger.info("Loading ML models from %s ...", MODELS_DIR)
 
@@ -62,7 +64,6 @@ def load_models() -> MLModels:
 
     logger.info("All ML models loaded successfully.")
     return _models
-
 
 def get_models() -> MLModels:
     """Get loaded models. Raises if not loaded."""

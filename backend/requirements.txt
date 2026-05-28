@@ -9,3 +9,4 @@ pandas>=2.2.0
 numpy>=1.26.0
 deep-translator>=1.11.0
 langdetect>=1.0.9
+huggingface_hub>=0.26.0

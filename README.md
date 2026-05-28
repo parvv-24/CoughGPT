@@ -1,3 +1,13 @@
+---
+title: CoughGPT
+emoji: 🩺
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # 🩺 CoughGPT
 
 CoughGPT is an AI health analysis project that takes natural-language symptom descriptions or condition names, predicts a likely disease or medication list, and generates a plain-English medical explanation with Gemini. The app is split into a Streamlit frontend and a FastAPI backend, with language detection and translation built in for multilingual use.
@@ -5,6 +15,7 @@ CoughGPT is an AI health analysis project that takes natural-language symptom de
 ---
 
 > [!CAUTION]
+>
 > ## ⚠️ Medical Disclaimer — READ BEFORE USE
 >
 > **CoughGPT is a student/learning project built purely for educational and demonstration purposes.**
@@ -19,62 +30,6 @@ CoughGPT is an AI health analysis project that takes natural-language symptom de
 
 ---
 
-## 📸 Screenshots
-
-### Home Page
-
-The landing page features a bold neobrutalist design with quick-access feature cards and a live backend health indicator.
-
-<p align="center">
-	<img src="docs/screenshots/coughgpt_home.png" alt="CoughGPT home page with neobrutalist UI" width="90%" />
-</p>
-
----
-
-### Symptom Input
-
-Users describe their symptoms in natural language. The system accepts input in multiple languages and auto-detects the language before processing.
-
-<p align="center">
-	<img src="docs/screenshots/coughgpt_input_symptoms.png" alt="Symptom input screen" width="90%" />
-</p>
-
----
-
-### Disease Prediction & Drug Recommendation
-
-After analysis, CoughGPT displays the predicted condition along with a list of commonly associated medications pulled from the drug review dataset.
-
-<p align="center">
-	<img src="docs/screenshots/coughgpt_recommendation.png" alt="Disease prediction and drug recommendation results" width="90%" />
-</p>
-
----
-
-### AI-Generated Explanation
-
-Gemini 2.5 Flash generates a concise, easy-to-understand explanation of the predicted condition — covering what it is, common symptoms, and general guidance.
-
-<p align="center">
-	<img src="docs/screenshots/coughgpt_explaination.png" alt="AI-generated disease explanation" width="90%" />
-</p>
-
----
-
-### Multilingual Support
-
-CoughGPT detects the input language automatically and translates both the query and the response, enabling use in Hindi and other supported languages.
-
-<p align="center">
-	<img src="docs/screenshots/coughgpt_hindi.png" alt="Hindi language symptom analysis" width="90%" />
-</p>
-
-<p align="center">
-	<img src="docs/screenshots/coughgpt_billingual.png" alt="Bilingual response output" width="90%" />
-</p>
-
----
-
 ## 🧠 Overview
 
 CoughGPT is designed as a fast, modular health assistant with three core capabilities:
@@ -85,22 +40,6 @@ CoughGPT is designed as a fast, modular health assistant with three core capabil
 
 The system also detects the user's language, translates non-English input to English for analysis, and translates the final response back to the original language when needed.
 
-## 🏗️ Architecture
-
-```mermaid
-flowchart TD
-		U[User input] --> F[Streamlit frontend]
-		F -->|HTTP POST with X-API-Key| B[FastAPI backend]
-		B --> L[Detect language and translate if needed]
-		L --> M[FastText vectors + ML classifiers]
-		M --> D[Disease prediction]
-		D --> R[Drug recommendation]
-		R --> G[Gemini 2.5 Flash explanation]
-		G --> T[Translate response back if needed]
-		T --> O[JSON response to frontend]
-		O --> F
-```
-
 ## ✨ Key Features
 
 - FastAPI backend with startup model loading through a lifespan context manager.
@@ -110,19 +49,19 @@ flowchart TD
 - Disease prediction with FastText embeddings and a trained classifier.
 - Drug recommendation from the drug review dataset.
 - Medical explanation generation using Google Gemini 2.5 Flash.
-- Streamlit frontend with a neobrutalist UI and multi-page navigation.
+- Streamlit frontend with a clean, responsive UI.
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Streamlit |
-| Backend | FastAPI |
-| NLP / Embeddings | FastText, Gensim |
-| ML | Scikit-learn, Joblib, NumPy, Pandas |
-| Language Tools | langdetect, deep-translator |
-| AI Explanation | Google Generative AI (Gemini 2.5 Flash) |
-| Dataset | UCI ML Drug Review dataset |
+| Layer            | Technology                               |
+| ---------------- | ---------------------------------------- |
+| Frontend         | Streamlit                                |
+| Backend          | FastAPI                                  |
+| NLP / Embeddings | FastText, Gensim                         |
+| ML               | Scikit-learn, Joblib, NumPy, Pandas      |
+| Language Tools   | langdetect, deep-translator              |
+| AI Explanation   | Google Generative AI (Gemini 2.5 Flash)  |
+| Deployment       | Docker, Supervisord, Hugging Face Spaces |
 
 ## ⚙️ How It Works
 
@@ -135,81 +74,30 @@ The backend performs the full pipeline in a single `/api/analyze` call:
 5. Call Gemini for a short medical explanation.
 6. Translate the explanation back to the user's language when required.
 
-## 🚀 Setup
+## 🚀 Deployment Architecture
 
-### 1. Install dependencies
+This specific branch (`hf-deployment`) is optimized for deployment on Hugging Face Spaces using a custom Docker container.
 
-Install the backend requirements first:
-
-```bash
-pip install -r backend/requirements.txt
-```
-
-If you want to run the frontend from a separate environment, install the Streamlit dependencies listed in `frontend/requirements.txt` as well.
-
-### 2. Configure environment variables
-
-Copy the example env file and fill in your keys:
-
-```bash
-cp backend/.env.example backend/.env
-```
-
-Required variables:
-
-```bash
-API_SECRET_KEY=your-secret-key
-GEMINI_API_KEY=your-gemini-api-key
-COUGHGPT_BACKEND_URL=http://127.0.0.1:8000
-```
-
-### 3. Run the backend
-
-```bash
-uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
-```
-
-### 4. Run the frontend
-
-```bash
-streamlit run frontend/app.py
-```
+- **Dual-Service:** Uses `supervisord` to run both the FastAPI backend and Streamlit frontend in a single container.
+- **Dynamic Model Loading:** Heavy ML models (.pkl, .h5, etc.) are omitted from this repository to save space and are downloaded dynamically from a dedicated Hugging Face Model repository at runtime using `huggingface_hub`.
+- **Environment Variables:** Secrets (like `GEMINI_API_KEY` and `API_SECRET_KEY`) are injected securely at runtime via Hugging Face Space Settings.
 
 ## 📡 API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/health` | Backend health check |
-| `POST` | `/api/detect-language` | Detect text language |
-| `POST` | `/api/translate` | Translate text between languages |
-| `POST` | `/api/predict-disease` | Predict disease from symptoms |
-| `POST` | `/api/predict-drugs` | Predict medications for condition |
-| `POST` | `/api/explain` | Generate Gemini explanation |
-| `POST` | `/api/analyze` | Full end-to-end analysis pipeline |
-
-## 📁 Project Structure
-
-```text
-backend/
-	main.py              FastAPI app and API routes
-	auth.py              X-API-Key authentication
-	ml_engine.py         Model loading and inference helpers
-	schemas.py           Request and response models
-	services/
-		translator.py      Language detection and translation
-		gemini.py          Gemini explanation service
-	models/              Trained ML artifacts and training data
-frontend/
-	app.py               Streamlit UI
-docs/
-	screenshots/         Project screenshots
-backup/                Report assets and older project artifacts
-```
+| Method | Endpoint               | Description                       |
+| ------ | ---------------------- | --------------------------------- |
+| `GET`  | `/api/health`          | Backend health check              |
+| `POST` | `/api/detect-language` | Detect text language              |
+| `POST` | `/api/translate`       | Translate text between languages  |
+| `POST` | `/api/predict-disease` | Predict disease from symptoms     |
+| `POST` | `/api/predict-drugs`   | Predict medications for condition |
+| `POST` | `/api/explain`         | Generate Gemini explanation       |
+| `POST` | `/api/analyze`         | Full end-to-end analysis pipeline |
 
 ## 📝 Notes
 
 - The backend loads ML models once at startup to avoid reloading large artifacts on every request.
-- The frontend is UI-only and talks to the backend over HTTP.
+- The frontend is UI-only and talks to the backend over HTTP internally within the Docker container.
 - This project is intended for **educational and informational use only** and is **not a substitute for professional medical advice**.
 
 ## 📄 License

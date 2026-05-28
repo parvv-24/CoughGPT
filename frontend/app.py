@@ -9,6 +9,9 @@ Run: streamlit run frontend/app.py
 import os
 import streamlit as st
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # -----------------------------
 # CONFIG

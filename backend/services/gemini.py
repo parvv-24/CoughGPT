@@ -6,7 +6,7 @@ Uses Google Generative AI (Gemini 2.5 Flash) for medical explanations.
 import os
 import logging
 
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,10 +17,11 @@ logger = logging.getLogger(__name__)
 _api_key = os.getenv("GEMINI_API_KEY")
 if not _api_key:
     logger.error("GEMINI_API_KEY not found in environment. Gemini will not work.")
+    _client = None
 else:
-    genai.configure(api_key=_api_key)
+    _client = genai.Client(api_key=_api_key)
 
-_gemini_model = genai.GenerativeModel("gemini-2.5-flash")
+_gemini_model = "gemini-2.5-flash"
 
 
 def gemini_explain(text: str) -> str:
@@ -29,9 +30,14 @@ def gemini_explain(text: str) -> str:
     Returns explanation string or error message.
     """
     try:
-        response = _gemini_model.generate_content(
-            f"Explain {text} medically in 4 concise, easy-to-understand "
-            f"sentences for a general audience."
+        if _client is None:
+            return "⚠️ AI explanation temporarily unavailable. Please try again."
+        response = _client.models.generate_content(
+            model=_gemini_model,
+            contents=(
+                f"Explain {text} medically in 4 concise, easy-to-understand "
+                f"sentences for a general audience."
+            ),
         )
         return response.text
     except Exception as e:

@@ -309,6 +309,18 @@ st.markdown("""
             font-family: 'Space Mono', monospace;
             box-shadow: 4px 4px 0px #000;
         }
+
+        [data-testid="stTextArea"] textarea::placeholder,
+        [data-testid="stTextInput"] input::placeholder {
+            color: #111827 !important;
+            opacity: 0.55 !important;
+        }
+
+        [data-testid="stTextArea"] textarea,
+        [data-testid="stTextInput"] input {
+            color: #111827 !important;
+            -webkit-text-fill-color: #111827 !important;
+        }
         
         .stTextArea textarea:focus, .stTextInput input:focus {
             border: 4px solid #000 !important;
